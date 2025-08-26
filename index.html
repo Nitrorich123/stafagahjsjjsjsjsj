@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockX Receipt Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>StockX Receipt Generator</h1>
+        <p class="disclaimer">For entertainment, research, or educational purposes only. Do not use for fraudulent activities.</p>
+        
+        <div class="form-preview">
+            <!-- Input Form -->
+            <div class="form-section">
+                <h2>Enter Receipt Details</h2>
+                <form id="receiptForm">
+                    <h3>Transaction Details</h3>
+                    <label>Order Number (XXXXXXX-XXXXXXX):</label>
+                    <input type="text" id="orderNumber" placeholder="e.g., 44864947-58787109" pattern="\d{7}-\d{7}" required>
+                    <label>Transaction Date:</label>
+                    <input type="date" id="transactionDate" required>
+                    <label>Estimated Delivery Date:</label>
+                    <input type="date" id="deliveryDate">
+
+                    <h3>Customer Information</h3>
+                    <label>Customer Name:</label>
+                    <input type="text" id="customerName" placeholder="e.g., Peter Vincent" required>
+                    <label>Shipping Address:</label>
+                    <input type="text" id="address" placeholder="e.g., 1205 Ocean Breeze Ave, Santa Monica, CA 91092" required>
+
+                    <h3>Item Details</h3>
+                    <label>Product Name:</label>
+                    <input type="text" id="productName" placeholder="e.g., Jordan 1 Retro Low OG SP" required>
+                    <label>Category:</label>
+                    <select id="category" required>
+                        <option value="Men’s">Men’s</option>
+                        <option value="Women’s">Women’s</option>
+                        <option value="Kids’">Kids’</option>
+                        <option value="Unisex">Unisex</option>
+                    </select>
+                    <label>Size:</label>
+                    <input type="text" id="size" placeholder="e.g., 11 or M" required>
+                    <label>Colorway:</label>
+                    <input type="text" id="colorway" placeholder="e.g., Dark Mocha/Black/Velvet Brown" required>
+                    <label>Style Code:</label>
+                    <input type="text" id="styleCode" placeholder="e.g., DM7866-202">
+                    <label>Condition:</label>
+                    <select id="condition" required>
+                        <option value="New">New</option>
+                        <option value="Used">Used</option>
+                        <option value="100% Authentic">100% Authentic</option>
+                    </select>
+
+                    <h3>Financial Details</h3>
+                    <label>Purchase Price ($):</label>
+                    <input type="number" id="purchasePrice" step="0.01" placeholder="e.g., 219.00" required>
+                    <label>Tax (%):</label>
+                    <input type="number" id="taxRate" step="0.01" placeholder="e.g., 7" required>
+                    <label>Processing Fee ($):</label>
+                    <input type="number" id="processingFee" step="0.01" placeholder="e.g., 29.95" required>
+                    <label>Shipping ($):</label>
+                    <input type="number" id="shipping" step="0.01" placeholder="e.g., 17.45" required>
+                    <label>Import Duties ($):</label>
+                    <input type="number" id="importDuties" step="0.01" placeholder="e.g., 0" value="0">
+
+                    <h3>Authentication</h3>
+                    <label>Authentication Code:</label>
+                    <input type="text" id="authCode" placeholder="e.g., STX987654" required>
+                    <label>Additional Notes:</label>
+                    <textarea id="notes" placeholder="e.g., Please inspect item. All claims null and void if StockX verified authentic tag is removed."></textarea>
+
+                    <h3>Design Customization</h3>
+                    <label>Upload Product Image or Logo:</label>
+                    <input type="file" id="imageUpload" accept="image/jpeg,image/png">
+                    <label>Font Style:</label>
+                    <select id="fontStyle">
+                        <option value="Arial">Arial</option>
+                        <option value="Helvetica">Helvetica</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Verdana">Verdana</option>
+                        <option value="StockXCustom">StockX Custom</option>
+                    </select>
+
+                    <button type="button" onclick="generateReceipt()">Generate Receipt</button>
+                    <button type="button" onclick="downloadPDF()">Download as PDF</button>
+                    <button type="button" onclick="sendEmail()">Send to Email</button>
+                </form>
+            </div>
+
+            <!-- Preview Section -->
+            <div class="preview-section">
+                <h2>Receipt Preview</h2>
+                <div id="receiptPreview" class="receipt">
+                    <img src="stockx-logo.png" alt="StockX Logo" class="logo">
+                    <h3>StockX Receipt</h3>
+                    <p><strong>Date:</strong> <span id="previewDate"></span></p>
+                    <p><strong>Customer Name:</strong> <span id="previewCustomerName"></span></p>
+                    <p><strong>Shipping Address:</strong> <span id="previewAddress"></span></p>
+                    <p><strong>Order Number:</strong> <span id="previewOrderNumber"></span></p>
+                    <h4>Product Details</h4>
+                    <p><strong>Item:</strong> <span id="previewProductName"></span></p>
+                    <p><strong>Category:</strong> <span id="previewCategory"></span></p>
+                    <p><strong>Size:</strong> <span id="previewSize"></span></p>
+                    <p><strong>Colorway:</strong> <span id="previewColorway"></span></p>
+                    <p><strong>Style Code:</strong> <span id="previewStyleCode"></span></p>
+                    <p><strong>Condition:</strong> <span id="previewCondition"></span></p>
+                    <h4>Financials</h4>
+                    <p><strong>Purchase Price:</strong> $<span id="previewPurchasePrice"></span></p>
+                    <p><strong>Tax:</strong> $<span id="previewTax"></span></p>
+                    <p><strong>Processing Fee:</strong> $<span id="previewProcessingFee"></span></p>
+                    <p><strong>Shipping:</strong> $<span id="previewShipping"></span></p>
+                    <p><strong>Import Duties:</strong> $<span id="previewImportDuties"></span></p>
+                    <p><strong>Total:</strong> $<span id="previewTotal"></span></p>
+                    <h4>Authentication</h4>
+                    <p><strong>Authentication Code:</strong> <span id="previewAuthCode"></span></p>
+                    <p><strong>Notes:</strong> <span id="previewNotes"></span></p>
+                    <img id="previewImage" class="product-image" alt="Product Image">
+                    <div id="barcode"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
